@@ -16,7 +16,9 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* globals self: true */
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-var */
+/* eslint-disable vars-on-top */
 
 self.window = {}; // to make UMD bundles work
 
@@ -87,7 +89,9 @@ function delegate(id, method, options) {
     // clone packets (for web worker structured cloning algorithm)
     response({ id:id, event:'method-return', data:openpgp.packet.clone.clonePackets(data) });
   }).catch(function(e) {
-    response({ id:id, event:'method-return', err:e.message, stack:e.stack });
+    response({
+      id:id, event:'method-return', err:e.message, stack:e.stack
+    });
   });
 }
 
@@ -97,8 +101,9 @@ function delegate(id, method, options) {
  */
 function response(event) {
   if (openpgp.crypto.random.randomBuffer.size < MIN_SIZE_RANDOM_BUFFER) {
-    self.postMessage({event: 'request-seed'});
+    self.postMessage({ event: 'request-seed' });
   }
-  self.postMessage(event, openpgp.util.getTransferables.call(openpgp.util, event.data));
+  self.postMessage(event, openpgp.util.getTransferables(event.data));
 }
+
 },{}]},{},[1]);
