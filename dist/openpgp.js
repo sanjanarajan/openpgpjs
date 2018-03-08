@@ -46615,7 +46615,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @module util
  */
 
-exports.default = {
+var util = {
 
   isString: function isString(data) {
     return typeof data === 'string' || String.prototype.isPrototypeOf(data);
@@ -46638,7 +46638,7 @@ exports.default = {
   getTransferables: function getTransferables(obj) {
     if (_config2.default.zero_copy && Object.prototype.isPrototypeOf(obj)) {
       var transferables = [];
-      this.collectBuffers(obj, transferables);
+      util.collectBuffers(obj, transferables);
       return transferables.length ? transferables : undefined;
     }
   },
@@ -46647,14 +46647,14 @@ exports.default = {
     if (!obj) {
       return;
     }
-    if (this.isUint8Array(obj) && collection.indexOf(obj.buffer) === -1) {
+    if (util.isUint8Array(obj) && collection.indexOf(obj.buffer) === -1) {
       collection.push(obj.buffer);
       return;
     }
     if (Object.prototype.isPrototypeOf(obj)) {
       for (var key in obj) {
         // recursively search all children
-        this.collectBuffers(obj[key], collection);
+        util.collectBuffers(obj[key], collection);
       }
     }
   },
@@ -46677,7 +46677,7 @@ exports.default = {
   },
 
   readDate: function readDate(bytes) {
-    var n = this.readNumber(bytes);
+    var n = util.readNumber(bytes);
     var d = new Date(n * 1000);
     return d;
   },
@@ -46685,7 +46685,7 @@ exports.default = {
   writeDate: function writeDate(time) {
     var numeric = Math.floor(time.getTime() / 1000);
 
-    return this.writeNumber(numeric, 4);
+    return util.writeNumber(numeric, 4);
   },
 
   normalizeDate: function normalizeDate() {
@@ -46739,9 +46739,9 @@ exports.default = {
    * @return {Uint8Array} MPI-formatted Uint8Array
    */
   Uint8Array_to_MPI: function Uint8Array_to_MPI(bin) {
-    var size = (bin.length - 1) * 8 + this.nbits(bin[0]);
+    var size = (bin.length - 1) * 8 + util.nbits(bin[0]);
     var prefix = Uint8Array.from([(size & 0xFF00) >> 8, size & 0xFF]);
-    return this.concatUint8Array([prefix, bin]);
+    return util.concatUint8Array([prefix, bin]);
   },
 
   /**
@@ -46763,7 +46763,7 @@ exports.default = {
    * @return {String}          Base-64 encoded string
    */
   Uint8Array_to_b64: function Uint8Array_to_b64(bytes, url) {
-    //    btoa(this.Uint8Array_to_str(bytes)).replace(/\+/g, '-').replace(/\//g, '_');
+    //    btoa(util.Uint8Array_to_str(bytes)).replace(/\+/g, '-').replace(/\//g, '_');
     return _base2.default.encode(bytes, url).replace('\n', '');
   },
 
@@ -46806,7 +46806,7 @@ exports.default = {
    * @return {Uint8Array} An array of 8-bit integers
    */
   str_to_Uint8Array: function str_to_Uint8Array(str) {
-    if (!this.isString(str)) {
+    if (!util.isString(str)) {
       throw new Error('str_to_Uint8Array: Data must be in the form of a string');
     }
 
@@ -46867,7 +46867,7 @@ exports.default = {
   concatUint8Array: function concatUint8Array(arrays) {
     var totalLength = 0;
     for (var i = 0; i < arrays.length; i++) {
-      if (!this.isUint8Array(arrays[i])) {
+      if (!util.isUint8Array(arrays[i])) {
         throw new Error('concatUint8Array: Data must be in the form of a Uint8Array');
       }
 
@@ -46890,7 +46890,7 @@ exports.default = {
    * @return {Uint8Array} new Uint8Array
    */
   copyUint8Array: function copyUint8Array(array) {
-    if (!this.isUint8Array(array)) {
+    if (!util.isUint8Array(array)) {
       throw new Error('Data must be in the form of a Uint8Array');
     }
 
@@ -46906,7 +46906,7 @@ exports.default = {
    * @return {Boolean} equality
    */
   equalsUint8Array: function equalsUint8Array(array1, array2) {
-    if (!this.isUint8Array(array1) || !this.isUint8Array(array2)) {
+    if (!util.isUint8Array(array1) || !util.isUint8Array(array2)) {
       throw new Error('Data must be in the form of a Uint8Array');
     }
 
@@ -46963,7 +46963,7 @@ exports.default = {
    */
   print_debug_hexstr_dump: function print_debug_hexstr_dump(str, strToHex) {
     if (_config2.default.debug) {
-      str += this.str_to_hex(strToHex);
+      str += util.str_to_hex(strToHex);
       console.log(str);
     }
   },
@@ -46976,7 +46976,7 @@ exports.default = {
     }
     var bytes = (bitcount - rest) / 8 + 1;
     var result = string.substring(0, bytes);
-    return this.shiftRight(result, 8 - rest); // +String.fromCharCode(string.charCodeAt(bytes -1) << (8-rest) & 0xFF);
+    return util.shiftRight(result, 8 - rest); // +String.fromCharCode(string.charCodeAt(bytes -1) << (8-rest) & 0xFF);
   },
 
   // returns bit length of the integer x
@@ -47018,7 +47018,7 @@ exports.default = {
    * @return {String} Resulting string.
    */
   shiftRight: function shiftRight(value, bitcount) {
-    var temp = this.str_to_Uint8Array(value);
+    var temp = util.str_to_Uint8Array(value);
     if (bitcount % 8 !== 0) {
       for (var i = temp.length - 1; i >= 0; i--) {
         temp[i] >>= bitcount % 8;
@@ -47029,7 +47029,7 @@ exports.default = {
     } else {
       return value;
     }
-    return this.Uint8Array_to_str(temp);
+    return util.Uint8Array_to_str(temp);
   },
 
   /**
@@ -47081,7 +47081,7 @@ exports.default = {
    * @return {Object}   The crypto module or 'undefined'
    */
   getNodeCrypto: function getNodeCrypto() {
-    if (!this.detectNode() || !_config2.default.use_native) {
+    if (!util.detectNode() || !_config2.default.use_native) {
       return;
     }
 
@@ -47094,7 +47094,7 @@ exports.default = {
    * @return {Function}   The Buffer constructor or 'undefined'
    */
   getNodeBuffer: function getNodeBuffer() {
-    if (!this.detectNode()) {
+    if (!util.detectNode()) {
       return;
     }
 
@@ -47105,7 +47105,7 @@ exports.default = {
   },
 
   getNodeZlib: function getNodeZlib() {
-    if (!this.detectNode() || !_config2.default.use_native) {
+    if (!util.detectNode() || !_config2.default.use_native) {
       return;
     }
 
@@ -47113,7 +47113,7 @@ exports.default = {
   },
 
   isEmailAddress: function isEmailAddress(data) {
-    if (!this.isString(data)) {
+    if (!util.isString(data)) {
       return false;
     }
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+([a-zA-Z]{2,}|xn--[a-zA-Z\-0-9]+)))$/;
@@ -47121,13 +47121,15 @@ exports.default = {
   },
 
   isUserId: function isUserId(data) {
-    if (!this.isString(data)) {
+    if (!util.isString(data)) {
       return false;
     }
     return (/</.test(data) && />$/.test(data)
     );
   }
 };
+
+exports.default = util;
 
 },{"./config":306,"./encoding/base64":336,"crypto":"crypto","zlib":"zlib"}],377:[function(_dereq_,module,exports){
 'use strict';
