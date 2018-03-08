@@ -91,7 +91,7 @@ Packetlist.prototype.push = function (packet) {
 
 /**
  * Remove a packet from the list and return it.
- * @return {Object}   The packet that was removed
+ * @returns {Object}   The packet that was removed
  */
 Packetlist.prototype.pop = function() {
   if (this.length === 0) {
@@ -164,6 +164,8 @@ Packetlist.prototype.map = function (callback) {
 /**
 * Executes the callback function once for each element
 * until it finds one where callback returns a truthy value
+* @param  {Function} callback
+* @returns {Promise<Boolean>}
 */
 Packetlist.prototype.some = async function (callback) {
   for (let i = 0; i < this.length; i++) {
@@ -176,9 +178,22 @@ Packetlist.prototype.some = async function (callback) {
 };
 
 /**
+* Executes the callback function once for each element,
+* returns true if all callbacks returns a truthy value
+*/
+Packetlist.prototype.every = function (callback) {
+  for (let i = 0; i < this.length; i++) {
+    if (!callback(this[i], i, this)) {
+      return false;
+    }
+  }
+  return true;
+};
+
+/**
  * Traverses packet tree and returns first matching packet
  * @param  {module:enums.packet} type The packet type
- * @return {module:packet/packet|null}
+ * @returns {module:packet/packet|null}
  */
 Packetlist.prototype.findPacket = function (type) {
   const packetlist = this.filterByTag(type);
@@ -238,6 +253,7 @@ Packetlist.prototype.concat = function (packetlist) {
       this.push(packetlist[i]);
     }
   }
+  return this;
 };
 
 /**
