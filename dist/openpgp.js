@@ -16896,7 +16896,7 @@ module.exports={
   ],
   "_resolved": "github:openpgpjs/elliptic#e187e706e11fa51bcd20e46e5119054be4e2a4a6",
   "_spec": "elliptic@github:openpgpjs/elliptic",
-  "_where": "/Users/sunny/Desktop/Protonmail/openpgpjs",
+  "_where": "/Users/sunny/Desktop/Protonmail/sanjanarajan/openpgpjs",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -29609,7 +29609,7 @@ exports.default = {
    * @memberof module:config
    * @property {String} versionstring A version string to be included in armored messages
    */
-  versionstring: "OpenPGP.js v3.0.11",
+  versionstring: "OpenPGP.js v3.0.12",
   /**
    * @memberof module:config
    * @property {String} commentstring A comment string to be included in armored messages
@@ -42071,7 +42071,7 @@ function isDataExpired(keyPacket, signature) {
   var normDate = _util2.default.normalizeDate(date);
   if (normDate !== null) {
     var expirationTime = getExpirationTime(keyPacket, signature);
-    return !(keyPacket.created <= normDate && normDate < expirationTime) || signature && signature.isExpired(date);
+    return !(normDate < expirationTime) || signature && signature.isExpired(date);
   }
   return false;
 }
@@ -48604,7 +48604,7 @@ Signature.prototype.isExpired = function () {
   var normDate = _util2.default.normalizeDate(date);
   if (normDate !== null) {
     var expirationTime = this.getExpirationTime();
-    return !(this.created <= normDate && normDate < expirationTime);
+    return !(normDate < expirationTime);
   }
   return false;
 };
